@@ -67,7 +67,7 @@ services:
       - mistral
     environment:
       MISTRAL_SERVER: api
-      UPGRADE_DB: true
+      UPGRADE_DB: "true"
       MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
       DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
     depends_on:
