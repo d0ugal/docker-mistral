@@ -21,9 +21,9 @@ services:
     networks:
       - database
     environment:
-      - POSTGRES_PASSWORD=mistral
-      - POSTGRES_USER=mistral
-      - POSTGRES_DB=mistral
+      POSTGRES_PASSWORD: mistral
+      POSTGRES_USER: mistral
+      POSTGRES_DB: mistral
     healthcheck:
       # this could be smarter
       test: nc -z localhost 5432
@@ -46,10 +46,10 @@ services:
       - message-broker
     hostname: rabbitmq
     environment:
-      - RABBITMQ_VM_MEMORY_HIGH_WATERMARK=0.81
-      - RABBITMQ_DEFAULT_USER=mistral
-      - RABBITMQ_DEFAULT_PASS=mistral
-      - RABBITMQ_DEFAULT_VHOST=mistral
+      RABBITMQ_VM_MEMORY_HIGH_WATERMARK: 0.81
+      RABBITMQ_DEFAULT_USER: mistral
+      RABBITMQ_DEFAULT_PASS: mistral
+      RABBITMQ_DEFAULT_VHOST: mistral
 
   mistral-api:
     build:
@@ -63,10 +63,10 @@ services:
       - message-broker
       - mistral
     environment:
-      - MISTRAL_SERVER=api
-      - UPGRADE_DB=true
-      - MESSAGE_BROKER_URL=rabbit://mistral:mistral@rabbitmq:5672/mistral
-      - DATABASE_URL=postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
+      MISTRAL_SERVER: api
+      UPGRADE_DB: true
+      MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
+      DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
     depends_on:
       database-migration:
         condition: service_started
@@ -80,9 +80,9 @@ services:
       - database
       - message-broker
     environment:
-      - MISTRAL_SERVER=engine
-      - MESSAGE_BROKER_URL=rabbit://mistral:mistral@rabbitmq:5672/mistral
-      - DATABASE_URL=postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
+      MISTRAL_SERVER: engine
+      MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
+      DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
     depends_on:
       mistral-api:
         condition: service_started
@@ -95,9 +95,9 @@ services:
     networks:
       - message-broker
     environment:
-      - MISTRAL_SERVER=executor
-      - MESSAGE_BROKER_URL=rabbit://mistral:mistral@rabbitmq:5672/mistral
-      - DATABASE_URL=postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
+      MISTRAL_SERVER: executor
+      MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
+      DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
     depends_on:
       mistral-api:
         condition: service_started
@@ -111,9 +111,9 @@ services:
       - database
       - message-broker
     environment:
-      - MISTRAL_SERVER=event-engine
-      - MESSAGE_BROKER_URL=rabbit://mistral:mistral@rabbitmq:5672/mistral
-      - DATABASE_URL=postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
+      MISTRAL_SERVER: event-engine
+      MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
+      DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
     depends_on:
       mistral-api:
         condition: service_started
@@ -127,9 +127,9 @@ services:
       - database
       - message-broker
     environment:
-      - MISTRAL_SERVER=notifier
-      - MESSAGE_BROKER_URL=rabbit://mistral:mistral@rabbitmq:5672/mistral
-      - DATABASE_URL=postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
+      MISTRAL_SERVER: notifier
+      MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
+      DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
     depends_on:
       mistral-api:
         condition: service_started
@@ -144,4 +144,4 @@ services:
     networks:
       - mistral
     environment:
-      - CF_MISTRAL_URL=http://mistral-api:8989
+      CF_MISTRAL_URL: http://mistral-api:8989
