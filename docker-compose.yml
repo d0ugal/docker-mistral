@@ -105,18 +105,19 @@ services:
       mistral-api:
         condition: service_started
 
-  mistral-notifier:
-    build:
-      context: .
-    networks:
-      - database
-      - message-broker
-    env_file: mistral.env
-    environment:
-      MISTRAL_SERVER: notifier
-    depends_on:
-      mistral-api:
-        condition: service_started
+#  NOTE: re-enable when Rocky is released.
+#  mistral-notifier:
+#    build:
+#      context: .
+#    networks:
+#      - database
+#      - message-broker
+#    env_file: mistral.env
+#    environment:
+#      MISTRAL_SERVER: notifier
+#    depends_on:
+#      mistral-api:
+#        condition: service_started
 
   cloud-flow:
     image: mcdoker18/cloud-flow:0.5.0
