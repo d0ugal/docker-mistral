@@ -1,4 +1,4 @@
-version: '2.4'
+version: '2.2'
 
 volumes:
   postgresql: ~
@@ -14,11 +14,6 @@ services:
   postgresql:
     image: postgres:10.1-alpine
     restart: unless-stopped
-    # Do you really need to expose this on your local machine?
-    # If so, consider: `- 5432` to use a random port locally
-    # or omit altogether
-    ports:
-      - "5432:5432"
     volumes:
       - postgresql:/var/lib/postgresql/data
     networks:
@@ -28,21 +23,24 @@ services:
       POSTGRES_USER: mistral
       POSTGRES_DB: mistral
     healthcheck:
-      # this could be smarter
-      test: nc -z localhost 5432
+      test: "su postgres -c pg_isready"
       interval: 5s
 
   database-migration:
     build:
       context: .
-    command: mistral-db-manage --config-file "${CONFIG_FILE}" upgrade
+      dockerfile: Dockerfile
+    command: mistral-db-manage --config-file "/etc/mistral/mistral.conf" upgrade head
+    environment:
+      MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
+      DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
     depends_on:
       postgresql:
         condition: service_healthy
 
   rabbitmq:
     image: rabbitmq:3.7.2-management-alpine
-    restart: always
+    restart: unless-stopped
     ports:
       - "15672:15672"
     networks:
@@ -58,7 +56,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: always
     ports:
       - "8989:8989"
     networks:
@@ -67,7 +64,6 @@ services:
       - mistral
     environment:
       MISTRAL_SERVER: api
-      UPGRADE_DB: "true"
       MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
       DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
     depends_on:
@@ -78,7 +74,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: always
     networks:
       - database
       - message-broker
@@ -94,7 +89,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: always
     networks:
       - message-broker
     environment:
@@ -109,7 +103,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: always
     networks:
       - database
       - message-broker
@@ -125,7 +118,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: always
     networks:
       - database
       - message-broker
@@ -139,7 +131,6 @@ services:
 
   cloud-flow:
     image: mcdoker18/cloud-flow:0.5.0
-    restart: always
     networks:
       - mistral
     ports:
