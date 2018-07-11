@@ -1,4 +1,14 @@
 version: '3'
+
+volumes:
+  postgresql: ~
+  rabbitmq: ~
+
+networks:
+  mistral: ~
+  database: ~
+  message-broker: ~
+
 services:
 
   postgresql:
@@ -108,13 +118,3 @@ services:
       - mistral
     environment:
       - CF_MISTRAL_URL=http://mistral-api:8989
-
-
-volumes:
-  postgresql:
-  rabbitmq:
-
-networks:
-  mistral:
-  database:
-  message-broker:
