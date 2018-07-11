@@ -13,7 +13,10 @@ services:
 
   postgresql:
     image: postgres:10.1-alpine
-    restart: always
+    restart: unless-stopped
+    # Do you really need to expose this on your local machine?
+    # If so, consider: `- 5432` to use a random port locally
+    # or omit altogether
     ports:
       - "5432:5432"
     volumes:
