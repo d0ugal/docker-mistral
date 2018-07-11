@@ -1,4 +1,4 @@
-version: '3'
+version: '2.4'
 
 volumes:
   postgresql: ~
@@ -24,6 +24,18 @@ services:
       - POSTGRES_PASSWORD=mistral
       - POSTGRES_USER=mistral
       - POSTGRES_DB=mistral
+    healthcheck:
+      # this could be smarter
+      test: nc -z localhost 5432
+      interval: 5s
+
+  database-migration:
+    build:
+      context: .
+    command: mistral-db-manage --config-file "${CONFIG_FILE}" upgrade
+    depends_on:
+      postgresql:
+        condition: service_healthy
 
   rabbitmq:
     image: rabbitmq:3.7.2-management-alpine
@@ -55,6 +67,9 @@ services:
       - UPGRADE_DB=true
       - MESSAGE_BROKER_URL=rabbit://mistral:mistral@rabbitmq:5672/mistral
       - DATABASE_URL=postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
+    depends_on:
+      database-migration:
+        condition: service_started
 
   mistral-engine:
     build:
@@ -68,6 +83,9 @@ services:
       - MISTRAL_SERVER=engine
       - MESSAGE_BROKER_URL=rabbit://mistral:mistral@rabbitmq:5672/mistral
       - DATABASE_URL=postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
+    depends_on:
+      mistral-api:
+        condition: service_started
 
   mistral-executor:
     build:
@@ -80,6 +98,9 @@ services:
       - MISTRAL_SERVER=executor
       - MESSAGE_BROKER_URL=rabbit://mistral:mistral@rabbitmq:5672/mistral
       - DATABASE_URL=postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
+    depends_on:
+      mistral-api:
+        condition: service_started
 
   mistral-event-engine:
     build:
@@ -93,6 +114,9 @@ services:
       - MISTRAL_SERVER=event-engine
       - MESSAGE_BROKER_URL=rabbit://mistral:mistral@rabbitmq:5672/mistral
       - DATABASE_URL=postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
+    depends_on:
+      mistral-api:
+        condition: service_started
 
   mistral-notifier:
     build:
@@ -106,6 +130,9 @@ services:
       - MISTRAL_SERVER=notifier
       - MESSAGE_BROKER_URL=rabbit://mistral:mistral@rabbitmq:5672/mistral
       - DATABASE_URL=postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
+    depends_on:
+      mistral-api:
+        condition: service_started
 
   cloud-flow:
     image: mcdoker18/cloud-flow:0.5.0
