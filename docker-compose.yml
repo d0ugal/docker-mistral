@@ -30,12 +30,21 @@ services:
     build:
       context: .
     command: mistral-db-manage --config-file "/etc/mistral/mistral.conf" upgrade head
-    env_file: mistral.env
     networks:
       - database
     depends_on:
       postgresql:
         condition: service_healthy
+
+  database-poulate:
+    build:
+      context: .
+    command: mistral-db-manage --config-file "/etc/mistral/mistral.conf" populate
+    networks:
+      - database
+    depends_on:
+      database-migration:
+        condition: service_started
 
   rabbitmq:
     image: rabbitmq:3.7.2-management-alpine
@@ -60,7 +69,6 @@ services:
       - database
       - message-broker
       - mistral
-    env_file: mistral.env
     environment:
       MISTRAL_SERVER: api
     depends_on:
@@ -73,7 +81,6 @@ services:
     networks:
       - database
       - message-broker
-    env_file: mistral.env
     environment:
       MISTRAL_SERVER: engine
     depends_on:
@@ -85,7 +92,6 @@ services:
       context: .
     networks:
       - message-broker
-    env_file: mistral.env
     environment:
       MISTRAL_SERVER: executor
     depends_on:
@@ -98,7 +104,6 @@ services:
     networks:
       - database
       - message-broker
-    env_file: mistral.env
     environment:
       MISTRAL_SERVER: event-engine
     depends_on:
@@ -112,7 +117,6 @@ services:
 #    networks:
 #      - database
 #      - message-broker
-#    env_file: mistral.env
 #    environment:
 #      MISTRAL_SERVER: notifier
 #    depends_on:

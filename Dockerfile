@@ -11,8 +11,10 @@ RUN curl -s -o /tmp/get-pip.py https://bootstrap.pypa.io/get-pip.py && \
 
 RUN yum -y install python-devel gcc epel-release;
 
-ENV CONFIG_FILE="/etc/mistral/mistral.conf" \
-    INI_SET="crudini --set /etc/mistral/mistral.conf"
+ENV INI_SET="crudini --set /etc/mistral/mistral.conf" \
+    CONFIG_FILE="/etc/mistral/mistral.conf" \
+    MESSAGE_BROKER_URL="rabbit://mistral:mistral@rabbitmq:5672/mistral" \
+    DATABASE_URL="postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral"
 
 RUN pip install psycopg2
 RUN pip install "mistral<=2015"
