@@ -29,11 +29,10 @@ services:
   database-migration:
     build:
       context: .
-      dockerfile: Dockerfile
     command: mistral-db-manage --config-file "/etc/mistral/mistral.conf" upgrade head
-    environment:
-      MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
-      DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
+    env_file: mistral.env
+    networks:
+      - database
     depends_on:
       postgresql:
         condition: service_healthy
@@ -55,17 +54,15 @@ services:
   mistral-api:
     build:
       context: .
-      dockerfile: Dockerfile
     ports:
       - "8989:8989"
     networks:
       - database
       - message-broker
       - mistral
+    env_file: mistral.env
     environment:
       MISTRAL_SERVER: api
-      MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
-      DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
     depends_on:
       database-migration:
         condition: service_started
@@ -73,14 +70,12 @@ services:
   mistral-engine:
     build:
       context: .
-      dockerfile: Dockerfile
     networks:
       - database
       - message-broker
+    env_file: mistral.env
     environment:
       MISTRAL_SERVER: engine
-      MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
-      DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
     depends_on:
       mistral-api:
         condition: service_started
@@ -88,13 +83,11 @@ services:
   mistral-executor:
     build:
       context: .
-      dockerfile: Dockerfile
     networks:
       - message-broker
+    env_file: mistral.env
     environment:
       MISTRAL_SERVER: executor
-      MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
-      DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
     depends_on:
       mistral-api:
         condition: service_started
@@ -102,14 +95,12 @@ services:
   mistral-event-engine:
     build:
       context: .
-      dockerfile: Dockerfile
     networks:
       - database
       - message-broker
+    env_file: mistral.env
     environment:
       MISTRAL_SERVER: event-engine
-      MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
-      DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
     depends_on:
       mistral-api:
         condition: service_started
@@ -117,14 +108,12 @@ services:
   mistral-notifier:
     build:
       context: .
-      dockerfile: Dockerfile
     networks:
       - database
       - message-broker
+    env_file: mistral.env
     environment:
       MISTRAL_SERVER: notifier
-      MESSAGE_BROKER_URL: rabbit://mistral:mistral@rabbitmq:5672/mistral
-      DATABASE_URL: postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral
     depends_on:
       mistral-api:
         condition: service_started
