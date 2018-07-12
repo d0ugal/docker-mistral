@@ -145,6 +145,7 @@ services:
 
   cloud-flow:
     image: mcdoker18/cloud-flow:0.5.0
+    restart: always
     networks:
       - mistral
     ports:
@@ -153,3 +154,6 @@ services:
       - mistral
     environment:
       CF_MISTRAL_URL: http://mistral-api:8989
+    depends_on:
+      mistral-api:
+        condition: service_started
