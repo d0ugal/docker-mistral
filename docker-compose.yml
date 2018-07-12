@@ -10,6 +10,8 @@ networks:
   message-broker: ~
 
 services:
+  alpine:
+    image: alpine:${IMG_VER}
 
   postgresql:
     image: postgres:10.4-alpine
