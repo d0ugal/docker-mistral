@@ -18,7 +18,8 @@ docker-compose up;
 ## Customise Build
 
 By setting some environment variables it is possible to change the Mistral
-version that is installed
+version that is installed. After running the build you run `docker-compose up`
+like normal.
 
 ### Install a specific version
 
@@ -27,6 +28,8 @@ MISTRAL_VERSION="7.0.0.0b2" docker-compose build;
 ```
 
 This should work with either a specific version, or a range that pip installs.
+This means  you can even install from a git repo if it is publicly accessible
+on github or similar.
 
 ### Install a Gerrit review
 
