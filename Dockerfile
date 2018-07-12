@@ -25,8 +25,10 @@ RUN pip install psycopg2
 COPY ./scripts/install-gerrit-review.sh /
 RUN if [ "x$GERRIT_REVIEW" != "x" ] ; then \
       ./install-gerrit-review.sh $GERRIT_REVIEW; \
-    else \
+    elif [[ $MISTRAL_VERSION = *"mistral"* ]]; then \
       pip install $MISTRAL_VERSION ; \
+    else \
+      pip install mistral==$MISTRAL_VERSION; \
     fi
 RUN rm install-gerrit-review.sh;
 RUN pip freeze | grep mistral
