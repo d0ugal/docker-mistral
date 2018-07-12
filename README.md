@@ -1,6 +1,12 @@
 # Docker Mistral
 
-Tools for quickly getting Mistral up and running with Docker and Docker compose.
+Tools for quickly getting Mistral up and running with Docker and Docker
+compose. This is inspired by the docker work in the Mistral repo, but defaults
+to installing a stable version.
+
+However, this project also aims to provide tools for testing and debugging
+while potentially being ready for production use.
+
 
 ## Build and Up
 
@@ -19,6 +25,8 @@ version that is installed
 ```
 MISTRAL_VERSION="7.0.0.0b2" docker-compose build;
 ```
+
+This should work with either a specific version, or a range that pip installs.
 
 ### Install a Gerrit review
 
