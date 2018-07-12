@@ -29,6 +29,9 @@ services:
   database-migration:
     build:
       context: .
+      args:
+        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
+        GERRIT_REVIEW: "${GERRIT_REVIEW:-}"
     command: mistral-db-manage --config-file "/etc/mistral/mistral.conf" upgrade head
     networks:
       - database
@@ -39,6 +42,9 @@ services:
   database-poulate:
     build:
       context: .
+      args:
+        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
+        GERRIT_REVIEW: "${GERRIT_REVIEW:-}"
     command: mistral-db-manage --config-file "/etc/mistral/mistral.conf" populate
     networks:
       - database
@@ -63,6 +69,9 @@ services:
   mistral-api:
     build:
       context: .
+      args:
+        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
+        GERRIT_REVIEW: "${GERRIT_REVIEW:-}"
     ports:
       - "8989:8989"
     networks:
@@ -78,6 +87,9 @@ services:
   mistral-engine:
     build:
       context: .
+      args:
+        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
+        GERRIT_REVIEW: "${GERRIT_REVIEW:-}"
     networks:
       - database
       - message-broker
@@ -90,6 +102,9 @@ services:
   mistral-executor:
     build:
       context: .
+      args:
+        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
+        GERRIT_REVIEW: "${GERRIT_REVIEW:-}"
     networks:
       - message-broker
     environment:
@@ -101,6 +116,9 @@ services:
   mistral-event-engine:
     build:
       context: .
+      args:
+        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
+        GERRIT_REVIEW: "${GERRIT_REVIEW:-}"
     networks:
       - database
       - message-broker
@@ -110,18 +128,20 @@ services:
       mistral-api:
         condition: service_started
 
-#  NOTE: re-enable when Rocky is released.
-#  mistral-notifier:
-#    build:
-#      context: .
-#    networks:
-#      - database
-#      - message-broker
-#    environment:
-#      MISTRAL_SERVER: notifier
-#    depends_on:
-#      mistral-api:
-#        condition: service_started
+  mistral-notifier:
+    build:
+      context: .
+      args:
+        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
+        GERRIT_REVIEW: "${GERRIT_REVIEW:-}"
+    networks:
+      - database
+      - message-broker
+    environment:
+      MISTRAL_SERVER: notifier
+    depends_on:
+      mistral-api:
+        condition: service_started
 
   cloud-flow:
     image: mcdoker18/cloud-flow:0.5.0
