@@ -26,7 +26,7 @@ services:
       test: "su postgres -c pg_isready"
       interval: 5s
 
-  database-migration:
+  postgresql-migration:
     build:
       context: .
       args:
@@ -39,7 +39,7 @@ services:
       postgresql:
         condition: service_healthy
 
-  database-poulate:
+  postgresql-poulate:
     build:
       context: .
       args:
@@ -49,17 +49,16 @@ services:
     networks:
       - database
     depends_on:
-      database-migration:
+      postgresql-migration:
         condition: service_started
 
-  message-broker:
+  rabbitmq:
     image: rabbitmq:3-management-alpine
     restart: unless-stopped
     ports:
       - "15672:15672"
     networks:
       - message-broker
-    hostname: rabbitmq
     environment:
       RABBITMQ_VM_MEMORY_HIGH_WATERMARK: 0.81
       RABBITMQ_DEFAULT_USER: mistral
@@ -87,9 +86,9 @@ services:
       interval: 5s
       test: "curl localhost:8989"
     depends_on:
-      database-migration:
+      postgresql-migration:
         condition: service_started
-      message-broker:
+      rabbitmq:
         condition: service_healthy
 
   mistral-engine:
@@ -99,6 +98,7 @@ services:
         MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
         GERRIT_REVIEW: "${GERRIT_REVIEW:-}"
     networks:
+      - mistral
       - database
       - message-broker
     environment:
@@ -114,6 +114,8 @@ services:
         MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
         GERRIT_REVIEW: "${GERRIT_REVIEW:-}"
     networks:
+      - mistral
+      - database
       - message-broker
     environment:
       MISTRAL_SERVER: executor
@@ -128,6 +130,7 @@ services:
         MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
         GERRIT_REVIEW: "${GERRIT_REVIEW:-}"
     networks:
+      - mistral
       - database
       - message-broker
     environment:
@@ -143,6 +146,7 @@ services:
         MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
         GERRIT_REVIEW: "${GERRIT_REVIEW:-}"
     networks:
+      - mistral
       - database
       - message-broker
     environment:

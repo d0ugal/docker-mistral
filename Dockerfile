@@ -47,9 +47,10 @@ RUN oslo-config-generator \
       --output-file "${CONFIG_FILE}"
 
 RUN ${INI_SET} DEFAULT transport_url "${MESSAGE_BROKER_URL}" \
-    && ${INI_SET} database connection "${DATABASE_URL}" \
-    && ${INI_SET} pecan auth_enable false \
-    && ${INI_SET} DEFAULT debug true
+  && ${INI_SET} database connection "${DATABASE_URL}" \
+  && ${INI_SET} pecan auth_enable false
+
+RUN cat "${CONFIG_FILE}"
 
 EXPOSE 8989
 CMD mistral-server --config-file "${CONFIG_FILE}" --server ${MISTRAL_SERVER}
