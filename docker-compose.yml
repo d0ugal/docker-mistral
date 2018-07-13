@@ -65,6 +65,9 @@ services:
       RABBITMQ_DEFAULT_USER: mistral
       RABBITMQ_DEFAULT_PASS: mistral
       RABBITMQ_DEFAULT_VHOST: mistral
+    healthcheck:
+      interval: 5s
+      test: "rabbitmqctl status"
 
   mistral-api:
     build:
@@ -80,11 +83,14 @@ services:
       - mistral
     environment:
       MISTRAL_SERVER: api
+    healthcheck:
+      interval: 5s
+      test: "curl localhost:8989"
     depends_on:
       database-migration:
         condition: service_started
       message-broker:
-        condition: service_started
+        condition: service_healthy
 
   mistral-engine:
     build:
@@ -99,7 +105,7 @@ services:
       MISTRAL_SERVER: engine
     depends_on:
       mistral-api:
-        condition: service_started
+        condition: service_healthy
 
   mistral-executor:
     build:
@@ -113,7 +119,7 @@ services:
       MISTRAL_SERVER: executor
     depends_on:
       mistral-api:
-        condition: service_started
+        condition: service_healthy
 
   mistral-event-engine:
     build:
@@ -128,7 +134,7 @@ services:
       MISTRAL_SERVER: event-engine
     depends_on:
       mistral-api:
-        condition: service_started
+        condition: service_healthy
 
   mistral-notifier:
     build:
@@ -143,7 +149,7 @@ services:
       MISTRAL_SERVER: notifier
     depends_on:
       mistral-api:
-        condition: service_started
+        condition: service_healthy
 
   cloud-flow:
     image: mcdoker18/cloud-flow:0.5.0
@@ -158,4 +164,4 @@ services:
       CF_MISTRAL_URL: http://mistral-api:8989
     depends_on:
       mistral-api:
-        condition: service_started
+        condition: service_healthy
