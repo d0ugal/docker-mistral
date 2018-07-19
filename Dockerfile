@@ -21,7 +21,7 @@ ENV INI_SET="crudini --set /etc/mistral/mistral.conf" \
     MESSAGE_BROKER_URL="rabbit://mistral:mistral@rabbitmq:5672/mistral" \
     DATABASE_URL="postgresql+psycopg2://mistral:mistral@postgresql:5432/mistral"
 
-RUN pip install psycopg2
+RUN pip install psycopg2-binary
 COPY ./scripts/install-gerrit-review.sh /
 RUN if [ "x$GERRIT_REVIEW" != "x" ] ; then \
       ./install-gerrit-review.sh $GERRIT_REVIEW; \
