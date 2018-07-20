@@ -6,6 +6,7 @@ LABEL name="Mistral" \
 
 # Default to the latest stable
 ARG MISTRAL_VERSION="mistral<2015"
+ARG MISTRAL_LIB_VERSION
 ARG GERRIT_REVIEW
 
 RUN yum -y update; yum clean all;
@@ -30,6 +31,13 @@ RUN if [ "x$GERRIT_REVIEW" != "x" ] ; then \
     else \
       pip install mistral==$MISTRAL_VERSION; \
     fi
+RUN if [ "x$MISTRAL_LIB_VERSION" == "x" ] ; then \
+      echo "Not installing mistral-lib"; \
+    elif [[ $MISTRAL_LIB_VERSION = *"mistral-lib"* ]]; then \
+      pip install $MISTRAL_LIB_VERSION ; \
+    else \
+      pip install mistral-lib==$MISTRAL_LIB_VERSION; \
+    fi
 RUN rm install-gerrit-review.sh;
 RUN pip freeze | grep mistral
 RUN mkdir /etc/mistral
@@ -48,7 +56,8 @@ RUN oslo-config-generator \
 
 RUN ${INI_SET} DEFAULT transport_url "${MESSAGE_BROKER_URL}" \
   && ${INI_SET} database connection "${DATABASE_URL}" \
-  && ${INI_SET} pecan auth_enable false
+  && ${INI_SET} pecan auth_enable false \
+  && ${INI_SET} notifier notify "[{'type': 'zaqar'}]"
 
 RUN cat "${CONFIG_FILE}"
 
