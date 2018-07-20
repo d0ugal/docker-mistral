@@ -7,6 +7,7 @@ LABEL name="Mistral" \
 # Default to the latest stable
 ARG MISTRAL_VERSION="mistral<2015"
 ARG MISTRAL_LIB_VERSION
+ARG MISTRAL_CLIENT_VERSION
 ARG GERRIT_REVIEW
 
 RUN yum -y update; yum clean all;
@@ -37,6 +38,13 @@ RUN if [ "x$MISTRAL_LIB_VERSION" == "x" ] ; then \
       pip install $MISTRAL_LIB_VERSION ; \
     else \
       pip install mistral-lib==$MISTRAL_LIB_VERSION; \
+    fi
+RUN if [ "x$MISTRAL_CLIENT_VERSION" == "x" ] ; then \
+      echo "Not installing python-mistralclient"; \
+    elif [[ $MISTRAL_CLIENT_VERSION = *"python-mistralclient"* ]]; then \
+      pip install $MISTRAL_CLIENT_VERSION ; \
+    else \
+      pip install mistral-lib==$MISTRAL_CLIENT_VERSION; \
     fi
 RUN rm install-gerrit-review.sh;
 RUN pip freeze | grep mistral
