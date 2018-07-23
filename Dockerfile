@@ -25,12 +25,20 @@ ENV INI_SET="crudini --set /etc/mistral/mistral.conf" \
 
 RUN pip install psycopg2-binary
 COPY ./scripts/install-gerrit-review.sh /
+RUN printenv;
 RUN if [ "x$GERRIT_REVIEW" != "x" ] ; then \
       ./install-gerrit-review.sh $GERRIT_REVIEW; \
     elif [[ $MISTRAL_VERSION = *"mistral"* ]]; then \
       pip install $MISTRAL_VERSION ; \
     else \
       pip install mistral==$MISTRAL_VERSION; \
+    fi
+RUN if [ "x$MISTRAL_CLIENT_VERSION" == "x" ] ; then \
+      echo "Not installing python-mistralclient"; \
+    elif [[ $MISTRAL_CLIENT_VERSION = *"python-mistralclient"* ]]; then \
+      pip install $MISTRAL_CLIENT_VERSION ; \
+    else \
+      pip install python-mistralclient==$MISTRAL_CLIENT_VERSION; \
     fi
 RUN if [ "x$MISTRAL_LIB_VERSION" == "x" ] ; then \
       echo "Not installing mistral-lib"; \
@@ -39,15 +47,8 @@ RUN if [ "x$MISTRAL_LIB_VERSION" == "x" ] ; then \
     else \
       pip install mistral-lib==$MISTRAL_LIB_VERSION; \
     fi
-RUN if [ "x$MISTRAL_CLIENT_VERSION" == "x" ] ; then \
-      echo "Not installing python-mistralclient"; \
-    elif [[ $MISTRAL_CLIENT_VERSION = *"python-mistralclient"* ]]; then \
-      pip install $MISTRAL_CLIENT_VERSION ; \
-    else \
-      pip install mistral-lib==$MISTRAL_CLIENT_VERSION; \
-    fi
-RUN rm install-gerrit-review.sh;
 RUN pip freeze | grep mistral
+RUN rm install-gerrit-review.sh;
 RUN mkdir /etc/mistral
 
 RUN oslo-config-generator \
