@@ -23,13 +23,16 @@ like normal.
 
 ### Install a specific version
 
+You can install specific versions of Mistral, mistral-lib and
+python-mistralclient. These values can be anything that pip installs or just
+the version number on its own. See for example installing a beta release, a
+specific version and installing from a git repo.
+
 ```
 MISTRAL_VERSION="7.0.0.0b2" docker-compose build;
+MISTRAL_CLIENT_VERSION="python-mistralclient==3.6.1"
+MISTRAL_LIB_VERSION="git+https://github.com/d0ugal/mistral-lib.git@master"
 ```
-
-This should work with either a specific version, or a range that pip installs.
-This means  you can even install from a git repo if it is publicly accessible
-on github or similar.
 
 ### Install a Gerrit review
 
