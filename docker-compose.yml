@@ -30,9 +30,9 @@ services:
     build:
       context: .
       args:
-        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
-        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION:-python-mistralclient}"
-        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION:-mistral-lib}"
+        MISTRAL_VERSION: "${MISTRAL_VERSION}"
+        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION}"
+        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION}"
         GERRIT_REVIEW: "${GERRIT_REVIEW}"
     command: mistral-db-manage --config-file "/etc/mistral/mistral.conf" upgrade head
     networks:
@@ -45,9 +45,9 @@ services:
     build:
       context: .
       args:
-        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
-        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION:-python-mistralclient}"
-        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION:-mistral-lib}"
+        MISTRAL_VERSION: "${MISTRAL_VERSION}"
+        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION}"
+        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION}"
         GERRIT_REVIEW: "${GERRIT_REVIEW}"
     command: mistral-db-manage --config-file "/etc/mistral/mistral.conf" populate
     networks:
@@ -76,9 +76,9 @@ services:
     build:
       context: .
       args:
-        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
-        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION:-python-mistralclient}"
-        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION:-mistral-lib}"
+        MISTRAL_VERSION: "${MISTRAL_VERSION}"
+        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION}"
+        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION}"
         GERRIT_REVIEW: "${GERRIT_REVIEW}"
     ports:
       - "8989:8989"
@@ -101,9 +101,9 @@ services:
     build:
       context: .
       args:
-        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
-        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION:-python-mistralclient}"
-        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION:-mistral-lib}"
+        MISTRAL_VERSION: "${MISTRAL_VERSION}"
+        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION}"
+        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION}"
         GERRIT_REVIEW: "${GERRIT_REVIEW}"
     networks:
       - mistral
@@ -119,9 +119,9 @@ services:
     build:
       context: .
       args:
-        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
-        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION:-python-mistralclient}"
-        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION:-mistral-lib}"
+        MISTRAL_VERSION: "${MISTRAL_VERSION}"
+        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION}"
+        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION}"
         GERRIT_REVIEW: "${GERRIT_REVIEW}"
     networks:
       - mistral
@@ -137,9 +137,9 @@ services:
     build:
       context: .
       args:
-        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
-        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION:-python-mistralclient}"
-        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION:-mistral-lib}"
+        MISTRAL_VERSION: "${MISTRAL_VERSION}"
+        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION}"
+        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION}"
         GERRIT_REVIEW: "${GERRIT_REVIEW}"
     networks:
       - mistral
@@ -155,10 +155,10 @@ services:
     build:
       context: .
       args:
-        MISTRAL_VERSION: "${MISTRAL_VERSION:-mistral<2015}"
-        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION:-python-mistralclient}"
-        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION:-mistral-lib}"
-        GERRIT_REVIEW: ${GERRIT_REVIEW}"
+        MISTRAL_VERSION: "${MISTRAL_VERSION}"
+        MISTRAL_CLIENT_VERSION: "${MISTRAL_CLIENT_VERSION}"
+        MISTRAL_LIB_VERSION: "${MISTRAL_LIB_VERSION}"
+        GERRIT_REVIEW: "${GERRIT_REVIEW}"
     networks:
       - mistral
       - database
